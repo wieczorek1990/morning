@@ -16,9 +16,9 @@ struct ContentView: View {
           }
         }
         .onDelete(perform: { offsets in
-            Task { @MainActor in
-                deleteItems(offsets: offsets)
-            }
+          Task { @MainActor in
+            deleteItems(offsets: offsets)
+          }
         })
       }
       .toolbar {
@@ -35,6 +35,28 @@ struct ContentView: View {
             Label("Add Item", systemImage: "plus")
           }
         }
+      }
+    }.onAppear {
+      checkAndClearIfNeeded()
+    }.onReceive(
+      NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+    ) { _ in
+      checkAndClearIfNeeded()
+    }
+  }
+
+  private func checkAndClearIfNeeded() {
+    guard let lastClearedDate = UserDefaults.standard.object(forKey: "lastClearedDate") as? Date
+    else {
+      return
+    }
+
+    let now = Date()
+    let differenceInSeconds = now.timeIntervalSince(lastClearedDate)
+
+    if differenceInSeconds > 86400 {
+      DispatchQueue.main.async {
+        clearItems()
       }
     }
   }
@@ -53,17 +75,21 @@ struct ContentView: View {
       }
     }
   }
-    private func clearItems() {
-        withAnimation {
-            for item in items {
-                item.isCompleted = false
-            }
-            try? modelContext.save()
-        }
+  private func clearItems() {
+    withAnimation {
+      for item in items {
+        item.isCompleted = false
+      }
+      try? modelContext.save()
     }
+    UserDefaults.standard.set(
+      Date(), forKey: "lastClearedDate"
+    )
+  }
 }
 
 #Preview {
   ContentView()
     .modelContainer(for: Item.self, inMemory: true)
+    .environment(\.scenePhase, .active)
 }
