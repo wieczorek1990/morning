@@ -1,0 +1,6 @@
+#!/bin/sh
+# Formats code.
+
+project=morning
+
+swift-format --in-place --recursive $project
