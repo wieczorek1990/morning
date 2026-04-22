@@ -3,13 +3,15 @@ import SwiftData
 
 @Model
 final class Item {
+    var id: UUID
     var timestamp: Date
-    var name: String
-    var checked: Bool
+    var details: String
+    var isCompleted: Bool
     
-    init(timestamp: Date, name: String, checked: Bool = false) {
+    init(timestamp: Date = Date(), details: String, isCompleted: Bool = false) {
+        self.id = UUID()
         self.timestamp = timestamp
-        self.name = name
-        self.checked = checked
+        self.details = details
+        self.isCompleted = isCompleted
     }
 }

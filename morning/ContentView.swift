@@ -6,13 +6,13 @@ struct ContentView: View {
     @Query private var items: [Item]
 
     var body: some View {
-        NavigationSplitView {
+        NavigationView {
             List {
                 ForEach(items) { item in
                     NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                        ItemDetailView(item: item)
                     } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        ItemRowView(item: item)
                     }
                 }
                 .onDelete(perform: deleteItems)
@@ -21,20 +21,18 @@ struct ContentView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-                ToolbarItem {
+                ToolbarItem(placement: .primaryAction) {
                     Button(action: addItem) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
             }
-        } detail: {
-            Text("Select an item")
         }
     }
 
     private func addItem() {
         withAnimation {
-            let newItem = Item(timestamp: Date(), name: "Read Bible")
+            let newItem = Item(details: "Nowe zadanie")
             modelContext.insert(newItem)
         }
     }
