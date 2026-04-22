@@ -54,7 +54,7 @@ struct ContentView: View {
     let now = Date()
     let differenceInSeconds = now.timeIntervalSince(lastClearedDate)
 
-    if differenceInSeconds > 86400 {
+    if differenceInSeconds > DAY_SECONDS {
       DispatchQueue.main.async {
         clearItems()
       }
