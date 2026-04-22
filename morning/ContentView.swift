@@ -15,9 +15,18 @@ struct ContentView: View {
             ItemRowView(item: item)
           }
         }
-        .onDelete(perform: deleteItems)
+        .onDelete(perform: { offsets in
+            Task { @MainActor in
+                deleteItems(offsets: offsets)
+            }
+        })
       }
       .toolbar {
+        ToolbarItem(placement: .navigationBarLeading) {
+          Button(action: clearItems) {
+            Label("Clear Items", systemImage: "minus")
+          }
+        }
         ToolbarItem(placement: .navigationBarTrailing) {
           EditButton()
         }
@@ -44,6 +53,14 @@ struct ContentView: View {
       }
     }
   }
+    private func clearItems() {
+        withAnimation {
+            for item in items {
+                item.isCompleted = false
+            }
+            try? modelContext.save()
+        }
+    }
 }
 
 #Preview {
