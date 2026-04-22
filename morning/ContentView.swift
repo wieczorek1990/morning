@@ -63,7 +63,7 @@ struct ContentView: View {
 
   private func addItem() {
     withAnimation {
-      let newItem = Item(details: "Nowe zadanie")
+      let newItem = Item(details: "New item")
       modelContext.insert(newItem)
     }
   }

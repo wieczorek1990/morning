@@ -18,12 +18,12 @@ struct ItemDetailView: View {
         .padding()
         .focused($editionFocused)
 
-      Text("Utworzono: \(item.timestamp, style: .date)")
+      Text("Created at: \(item.timestamp, style: .date)")
         .foregroundColor(.secondary)
         .font(.caption)
     }
     .padding()
-    .navigationTitle(item.isCompleted ? "Zakończone" : "Edytuj")
+    .navigationTitle(item.isCompleted ? "Completed" : "Edit")
     .onAppear {
       editionFocused = true
     }
