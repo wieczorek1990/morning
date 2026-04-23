@@ -5,9 +5,6 @@ import SwiftUI
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @Query private var items: [Item]
-  @State private var currentDate = Date.now
-
-  let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
   var body: some View {
     NavigationView {
@@ -19,11 +16,7 @@ struct ContentView: View {
             ItemRowView(item: item)
           }
         }
-        .onDelete(perform: { offsets in
-          Task { @MainActor in
-            deleteItems(offsets: offsets)
-          }
-        })
+        .onDelete(perform: deleteItems)
       }
       .toolbar {
         ToolbarItem(placement: .navigationBarLeading) {
@@ -43,45 +36,9 @@ struct ContentView: View {
     }.onReceive(
       NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
     ) { _ in
-      checkAndClearIfNeeded()
+      print("Fire...")
     }.onAppear {
-      guard UserDefaults.standard.object(forKey: LAST_CLEARED_DATE) is Date
-      else {
-        setLastClearedDate()
-        return
-      }
-    }
-    Text("\(getYesterdayMorning())")
-    Text("\(currentDate)")
-      .onReceive(timer) { input in
-        currentDate = input
-      }
-  }
-
-  private func getYesterdayMorning() -> Date {
-    let now = Date()
-    let yesterdayMorning = Calendar.current.date(
-      bySettingHour: 7,
-      minute: 0,
-      second: 0,
-      of: now.yesterday
-    )!
-    return yesterdayMorning
-  }
-
-  private func checkAndClearIfNeeded() {
-    guard let lastClearedDate = UserDefaults.standard.object(forKey: LAST_CLEARED_DATE) as? Date
-    else {
-      return
-    }
-
-    let yesterdayMorning = getYesterdayMorning()
-    let differenceInSeconds = lastClearedDate.timeIntervalSince(yesterdayMorning)
-
-    if differenceInSeconds > DAY_SECONDS {
-      DispatchQueue.main.async {
-        clearItems()
-      }
+      print("Water...")
     }
   }
 
@@ -99,18 +56,12 @@ struct ContentView: View {
       }
     }
   }
-  private func setLastClearedDate() {
-    UserDefaults.standard.set(
-      Date(), forKey: LAST_CLEARED_DATE
-    )
-  }
   private func clearItems() {
     withAnimation {
       for item in items {
         item.isCompleted = false
       }
       try? modelContext.save()
-      setLastClearedDate()
     }
   }
 }

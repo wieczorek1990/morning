@@ -8,10 +8,10 @@ final class Item {
   var details: String
   var isCompleted: Bool
 
-  init(timestamp: Date = Date(), details: String, isCompleted: Bool = false) {
-    self.id = UUID()
-    self.timestamp = timestamp
+  init(details: String, isCompleted: Bool = false, id: UUID = UUID(), timestamp: Date = Date()) {
     self.details = details
     self.isCompleted = isCompleted
+    self.timestamp = timestamp
+    self.id = id
   }
 }
