@@ -9,7 +9,7 @@ struct ContentView: View {
   var body: some View {
     NavigationView {
       List {
-        ForEach(items) { item in
+          ForEach(items.sorted(by: {$0.timestamp < $1.timestamp})) { item in
           NavigationLink {
             ItemDetailView(item: item)
           } label: {
