@@ -5,11 +5,20 @@ import SwiftUI
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @Query private var items: [Item]
+  @State private var sortingOldestTop = true
 
   var body: some View {
     NavigationView {
       List {
-          ForEach(items.sorted(by: {$0.timestamp < $1.timestamp})) { item in
+        ForEach(
+          items.sorted { item1, item2 in
+            if sortingOldestTop {
+              return item1.timestamp < item2.timestamp
+            } else {
+              return item1.timestamp > item2.timestamp
+            }
+          }
+        ) { item in
           NavigationLink {
             ItemDetailView(item: item)
           } label: {
@@ -22,6 +31,11 @@ struct ContentView: View {
         ToolbarItem(placement: .navigationBarLeading) {
           Button(action: clearItems) {
             Label("Clear Items", systemImage: "minus")
+          }
+        }
+        ToolbarItem(placement: .navigationBarLeading) {
+          Toggle(isOn: $sortingOldestTop) {
+            Image(systemName: "arrow.up.arrow.down")
           }
         }
         ToolbarItem(placement: .navigationBarTrailing) {
