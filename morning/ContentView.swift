@@ -10,26 +10,32 @@ struct ContentView: View {
   var body: some View {
     NavigationView {
       List {
-        ForEach(
-          items.sorted { item1, item2 in
-            if sortingOldestTop {
-              return item1.timestamp < item2.timestamp
-            } else {
-              return item1.timestamp > item2.timestamp
+        if items.isEmpty {
+          Image(systemName: "sun.max.fill")
+            .font(.system(size: 70))
+            .frame(maxWidth: .infinity, alignment: .center)
+        } else {
+          ForEach(
+            items.sorted { item1, item2 in
+              if sortingOldestTop {
+                return item1.timestamp < item2.timestamp
+              } else {
+                return item1.timestamp > item2.timestamp
+              }
+            }
+          ) { item in
+            NavigationLink {
+              ItemDetailView(item: item)
+            } label: {
+              ItemRowView(item: item)
             }
           }
-        ) { item in
-          NavigationLink {
-            ItemDetailView(item: item)
-          } label: {
-            ItemRowView(item: item)
-          }
+          .onDelete(perform: deleteItems)
         }
-        .onDelete(perform: deleteItems)
       }
       .toolbar {
         ToolbarItem(placement: .navigationBarLeading) {
-          Button(action: clearItems) {
+          Button(action: uncompleteItems) {
             Label("Clear Items", systemImage: "minus")
           }
         }
@@ -60,7 +66,11 @@ struct ContentView: View {
     withAnimation {
       let newItem = Item(details: String(localized: "New item"))
       modelContext.insert(newItem)
-      try? modelContext.save()
+      do {
+        try modelContext.save()
+      } catch {
+        print("Failed to add item: \(error.localizedDescription)")
+      }
     }
   }
 
@@ -69,15 +79,23 @@ struct ContentView: View {
       for index in offsets {
         modelContext.delete(items[index])
       }
-      try? modelContext.save()
+      do {
+        try modelContext.save()
+      } catch {
+        print("Failed to delete items: \(error.localizedDescription)")
+      }
     }
   }
-  private func clearItems() {
+  private func uncompleteItems() {
     withAnimation {
       for item in items {
         item.isCompleted = false
       }
-      try? modelContext.save()
+      do {
+        try modelContext.save()
+      } catch {
+        print("Failed to uncomplete items: \(error.localizedDescription)")
+      }
     }
   }
 }

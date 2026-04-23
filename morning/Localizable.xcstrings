@@ -51,6 +51,17 @@
         }
       }
     },
+    "Empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pusto"
+          }
+        }
+      }
+    },
     "New item" : {
       "extractionState" : "manual",
       "localizations" : {
