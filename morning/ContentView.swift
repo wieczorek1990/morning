@@ -44,7 +44,7 @@ struct ContentView: View {
 
   private func addItem() {
     withAnimation {
-      let newItem = Item(details: "New item")
+      let newItem = Item(details: String(localized: "New item"))
       modelContext.insert(newItem)
     }
   }

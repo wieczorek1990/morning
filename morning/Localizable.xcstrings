@@ -50,6 +50,23 @@
           }
         }
       }
+    },
+    "New item" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New item"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nowy wpis"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
