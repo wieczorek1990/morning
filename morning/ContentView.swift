@@ -46,6 +46,7 @@ struct ContentView: View {
     withAnimation {
       let newItem = Item(details: String(localized: "New item"))
       modelContext.insert(newItem)
+      try? modelContext.save()
     }
   }
 
@@ -54,6 +55,7 @@ struct ContentView: View {
       for index in offsets {
         modelContext.delete(items[index])
       }
+      try? modelContext.save()
     }
   }
   private func clearItems() {
