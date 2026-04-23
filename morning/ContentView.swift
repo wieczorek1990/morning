@@ -51,10 +51,22 @@ struct ContentView: View {
         return
       }
     }
+    Text("\(getYesterdayMorning())")
     Text("\(currentDate)")
       .onReceive(timer) { input in
         currentDate = input
       }
+  }
+
+  private func getYesterdayMorning() -> Date {
+    let now = Date()
+    let yesterdayMorning = Calendar.current.date(
+      bySettingHour: 7,
+      minute: 0,
+      second: 0,
+      of: now.yesterday
+    )!
+    return yesterdayMorning
   }
 
   private func checkAndClearIfNeeded() {
@@ -63,13 +75,7 @@ struct ContentView: View {
       return
     }
 
-    let now = Date()
-    let yesterdayMorning = Calendar.current.date(
-      bySettingHour: 7 + 2,  // CET == GMT + 2
-      minute: 0,
-      second: 0,
-      of: now.yesterday
-    )!
+    let yesterdayMorning = getYesterdayMorning()
     let differenceInSeconds = lastClearedDate.timeIntervalSince(yesterdayMorning)
 
     if differenceInSeconds > DAY_SECONDS {
