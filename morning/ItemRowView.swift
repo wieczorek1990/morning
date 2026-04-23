@@ -10,7 +10,11 @@ struct ItemRowView: View {
       Button(action: {
         withAnimation {
           item.isCompleted.toggle()
-          try? modelContext.save()
+          do {
+            try modelContext.save()
+          } catch {
+            print("Failed to save item: \(error.localizedDescription)")
+          }
         }
       }) {
         Image(systemName: item.isCompleted ? "checkmark.square.fill" : "square")

@@ -36,7 +36,7 @@ struct ContentView: View {
       .toolbar {
         ToolbarItem(placement: .navigationBarLeading) {
           Button(action: uncompleteItems) {
-            Label("Clear Items", systemImage: "minus")
+            Label("Uncomplete Items", systemImage: "minus")
           }
         }
         ToolbarItem(placement: .navigationBarLeading) {

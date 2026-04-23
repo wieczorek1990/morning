@@ -13,10 +13,16 @@
     },
     "Clear Items" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uncomplete Items"
+          }
+        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wyczyść wpisy"
+            "value" : "Odznacz wpisy"
           }
         }
       }
