@@ -8,7 +8,7 @@ struct ItemDetailView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
       Toggle(isOn: $item.isCompleted) {
-        Text(item.details.isEmpty ? "Empty..." : item.details)
+        Text(item.details.isEmpty ? String(localized: "Empty...") : item.details)
           .strikethrough(item.isCompleted, color: .secondary)
           .font(.headline)
       }

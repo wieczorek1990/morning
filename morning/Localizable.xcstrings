@@ -12,6 +12,7 @@
       }
     },
     "Clear Items" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -57,13 +58,16 @@
         }
       }
     },
-    "Empty" : {
+    "Empty..." : {
+
+    },
+    "Empty…" : {
       "extractionState" : "manual",
       "localizations" : {
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pusto"
+            "value" : "Pusto…"
           }
         }
       }
@@ -84,6 +88,9 @@
           }
         }
       }
+    },
+    "Uncomplete Items" : {
+
     }
   },
   "version" : "1.1"

@@ -13,7 +13,12 @@ struct ContentView: View {
         if items.isEmpty {
           Image(systemName: "sun.max.fill")
             .font(.system(size: 70))
-            .frame(maxWidth: .infinity, alignment: .center)
+            .foregroundStyle(
+              LinearGradient(
+                colors: [.yellow, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .padding(.vertical, 40)
         } else {
           ForEach(
             items.sorted { item1, item2 in
