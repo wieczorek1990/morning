@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct ItemDetailView: View {
   @Bindable var item: Item
@@ -23,7 +24,7 @@ struct ItemDetailView: View {
         .font(.caption)
     }
     .padding()
-    .navigationTitle(item.isCompleted ? "Completed" : "Edit")
+    .navigationTitle(item.isCompleted ? String(localized: "Completed") : String(localized: "Edit"))
     .onAppear {
       editionFocused = true
     }

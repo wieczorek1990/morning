@@ -11,23 +11,6 @@
         }
       }
     },
-    "Clear Items" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uncomplete Items"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odznacz wpisy"
-          }
-        }
-      }
-    },
     "Completed" : {
       "localizations" : {
         "pl" : {
@@ -59,28 +42,17 @@
       }
     },
     "Empty..." : {
-
-    },
-    "Empty…" : {
-      "extractionState" : "manual",
       "localizations" : {
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pusto…"
+            "value" : "Pusto..."
           }
         }
       }
     },
     "New item" : {
-      "extractionState" : "manual",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New item"
-          }
-        },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
@@ -90,7 +62,14 @@
       }
     },
     "Uncomplete Items" : {
-
+      "localizations" : {
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odznacz wpisy"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
