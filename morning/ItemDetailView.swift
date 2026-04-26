@@ -19,7 +19,10 @@ struct ItemDetailView: View {
         .padding()
         .focused($editionFocused)
 
-      Text("Created at: \(item.timestamp, style: .date)")
+        let formattedDate = item.timestamp.formatted(
+            date: .abbreviated, time: .shortened
+        )
+        Text(String(format: String(localized:  "Created at: %@"), formattedDate))
         .foregroundColor(.secondary)
         .font(.caption)
     }

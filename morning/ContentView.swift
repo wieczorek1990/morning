@@ -41,7 +41,7 @@ struct ContentView: View {
       .toolbar {
         ToolbarItem(placement: .navigationBarLeading) {
           Button(action: uncompleteItems) {
-            Label("Uncomplete Items", systemImage: "minus")
+              Label(String(localized: "Uncomplete Items"), systemImage: "minus")
           }
         }
         ToolbarItem(placement: .navigationBarLeading) {
@@ -54,7 +54,7 @@ struct ContentView: View {
         }
         ToolbarItem(placement: .primaryAction) {
           Button(action: addItem) {
-            Label("Add Item", systemImage: "plus")
+              Label(String(localized: "Add Item"), systemImage: "plus")
           }
         }
       }
