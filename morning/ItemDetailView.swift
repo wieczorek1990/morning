@@ -8,12 +8,6 @@ struct ItemDetailView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
-      Toggle(isOn: $item.isCompleted) {
-        Text(item.details.isEmpty ? String(localized: "Empty...") : item.details)
-          .strikethrough(item.isCompleted, color: .secondary)
-          .font(.headline)
-      }
-
       TextEditor(text: $item.details)
         .font(.body)
         .padding()
@@ -27,7 +21,7 @@ struct ItemDetailView: View {
         .font(.caption)
     }
     .padding()
-    .navigationTitle(item.isCompleted ? String(localized: "Completed") : String(localized: "Edit"))
+    .navigationTitle(String(localized: "Edit"))
     .onAppear {
       editionFocused = true
     }

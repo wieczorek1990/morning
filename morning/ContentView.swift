@@ -49,9 +49,6 @@ struct ContentView: View {
             Image(systemName: "arrow.up.arrow.down")
           }
         }
-        ToolbarItem(placement: .navigationBarTrailing) {
-          EditButton()
-        }
         ToolbarItem(placement: .primaryAction) {
           Button(action: addItem) {
               Label(String(localized: "Add Item"), systemImage: "plus")
@@ -69,7 +66,7 @@ struct ContentView: View {
 
   private func addItem() {
     withAnimation {
-      let newItem = Item(details: String(localized: "New item"))
+      let newItem = Item(details: String(localized: "New item..."))
       modelContext.insert(newItem)
       do {
         try modelContext.save()
