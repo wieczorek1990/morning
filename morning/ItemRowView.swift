@@ -24,9 +24,16 @@ struct ItemRowView: View {
       }
       .buttonStyle(PlainButtonStyle())
 
-      Text(item.details)
-        .strikethrough(item.isCompleted, color: .secondary)
-        .lineLimit(1)
+      if item.isNew {
+        Text(item.details)
+          .strikethrough(item.isCompleted, color: .secondary)
+          .lineLimit(1)
+          .foregroundStyle(.blue)
+      } else {
+        Text(item.details)
+          .strikethrough(item.isCompleted, color: .secondary)
+          .lineLimit(1)
+      }
 
       Spacer()
     }
