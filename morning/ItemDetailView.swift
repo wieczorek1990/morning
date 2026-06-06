@@ -27,21 +27,21 @@ struct ItemDetailView: View {
           .font(.body)
           .padding()
           .onChange(of: item.details) {
-            item.timestampModified = Date()
+            item.modified = Date()
           }
       } else {
         Text(item.details)
           .foregroundStyle(.blue)
       }
 
-      let createdFormattedDate = item.timestampCreated.formatted(
+      let createdFormattedDate = item.created.formatted(
         date: .abbreviated, time: .shortened
       )
       Text(String(format: String(localized: "Created at: %@"), createdFormattedDate))
         .foregroundColor(.secondary)
         .font(.caption)
 
-      let modifiedFormattedDate = item.timestampModified.formatted(
+      let modifiedFormattedDate = item.modified.formatted(
         date: .abbreviated, time: .standard
       )
       Text(String(format: String(localized: "Modified at: %@"), modifiedFormattedDate))

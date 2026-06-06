@@ -16,8 +16,8 @@ struct ContentView: View {
   var sortedItems: [Item] {
     items.sorted { lhs, rhs in
       sortingOldestTop
-        ? (lhs.timestampCreated < rhs.timestampCreated)
-        : (lhs.timestampCreated > rhs.timestampCreated)
+        ? (lhs.created < rhs.created)
+        : (lhs.created > rhs.created)
     }
   }
   var body: some View {
@@ -88,6 +88,18 @@ struct ContentView: View {
   private func requestDeleteItems(offsets: IndexSet) {
     guard pendingDeletion.timer == nil else { return }
 
+    let itemsToMark = offsets.map { index in
+      sortedItems[index]
+    }
+
+    withAnimation {
+      for item in itemsToMark {
+        item.scheduledToDelete = true
+      }
+
+      try? modelContext.save()
+    }
+
     pendingDeletion.offsets = offsets
     deleteCountdown = Int(DELETION_TIMEOUT)
 
@@ -96,7 +108,7 @@ struct ContentView: View {
       .sink { _ in
         deleteCountdown -= 1
         if deleteCountdown <= 0 {
-          executeDeletion(offsets: offsets)  // Przekaż offsets do funkcji wykonującej
+          executeDeletion(offsets: offsets)
           pendingDeletion = (offsets: .init(), timer: nil)
         }
       }
@@ -122,6 +134,16 @@ struct ContentView: View {
 
   private func cancelPendingDeletion() {
     pendingDeletion.timer?.cancel()
+
+    let itemsToRestore = pendingDeletion.offsets.map { sortedItems[$0] }
+
+    withAnimation {
+      for item in itemsToRestore {
+        item.scheduledToDelete = false
+      }
+      try? modelContext.save()
+    }
+
     pendingDeletion = (offsets: .init(), timer: nil)
     deleteCountdown = 0
   }
