@@ -1,0 +1,4 @@
+#!/usr/bin/env fish
+# Slurps all the Swift files.
+
+cat **.swift | pbcopy
