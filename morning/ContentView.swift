@@ -6,18 +6,24 @@ struct ContentView: View {
   private let DELETION_TIMEOUT: Double = 5.0
 
   @Environment(\.modelContext) private var modelContext
-  @Query(sort: \Item.timestampCreated, order: .forward)
-  private var items: [Item]
+  @Query private var items: [Item]
   @State private var sortingOldestTop = true
   @State private var pendingDeletion: (offsets: IndexSet, timer: AnyCancellable?) = (
     offsets: .init(), timer: nil
   )
   @State private var deleteCountdown = 0
 
+  var sortedItems: [Item] {
+    items.sorted { lhs, rhs in
+      sortingOldestTop
+        ? (lhs.timestampCreated < rhs.timestampCreated)
+        : (lhs.timestampCreated > rhs.timestampCreated)
+    }
+  }
   var body: some View {
     NavigationView {
       List {
-        if items.isEmpty {
+        if sortedItems.isEmpty {
           Image(systemName: "sun.max.fill")
             .font(.system(size: 70))
             .foregroundStyle(
@@ -27,7 +33,7 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .padding(.vertical, 40)
         } else {
-          ForEach(items) { item in
+          ForEach(sortedItems) { item in
             NavigationLink {
               ItemDetailView(item: item)
             } label: {
@@ -89,19 +95,20 @@ struct ContentView: View {
       .autoconnect()
       .sink { _ in
         deleteCountdown -= 1
-
         if deleteCountdown <= 0 {
-          executeDeletion()
+          executeDeletion(offsets: offsets)  // Przekaż offsets do funkcji wykonującej
           pendingDeletion = (offsets: .init(), timer: nil)
         }
       }
   }
 
-  private func executeDeletion() {
+  private func executeDeletion(offsets: IndexSet) {
     withAnimation {
-      for offset in pendingDeletion.offsets {
-        let itemToDelete = items[offset]
-        modelContext.delete(itemToDelete)
+      // Pobieramy elementy bezpośrednio z posortowanej listy, która była wyświetlana
+      for offset in offsets {
+        if offset < sortedItems.count {
+          modelContext.delete(sortedItems[offset])
+        }
       }
       do {
         try modelContext.save()
