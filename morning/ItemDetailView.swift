@@ -4,17 +4,26 @@ import SwiftUI
 struct ItemDetailView: View {
   @Bindable var item: Item
   @Environment(\.modelContext) private var modelContext
-  @FocusState private var editionFocused: Bool
+  @State private var tapped = false
+
+  var tap: some Gesture {
+    TapGesture(count: 1)
+      .onEnded { _ in self.tapped = !self.tapped }
+  }
 
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
-      TextEditor(text: $item.details)
-        .font(.body)
-        .padding()
-        .focused($editionFocused)
-        .onChange(of: item.details) {
-          item.timestampModified = Date()
-        }
+      if self.tapped {
+        TextEditor(text: $item.details)
+          .font(.body)
+          .padding()
+          .onChange(of: item.details) {
+            item.timestampModified = Date()
+          }
+      } else {
+        Text(item.details)
+          .foregroundStyle(.blue)
+      }
 
       let createdFormattedDate = item.timestampCreated.formatted(
         date: .abbreviated, time: .shortened
@@ -37,13 +46,12 @@ struct ItemDetailView: View {
         item.details = ""
         item.isNew = false
       }
-
-      editionFocused = true
     }.onDisappear {
       if item.details.isEmpty {
         item.details = String(localized: "New item...")
         item.isNew = true
       }
     }
+    .gesture(tap)
   }
 }
