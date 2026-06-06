@@ -50,7 +50,6 @@ struct ContentView: View {
         }
         ToolbarItem(placement: .primaryAction) {
           if pendingDeletion.timer != nil {
-            // Fixed: Removed the String argument before 'action'
             Button(action: cancelPendingDeletion) {
               HStack {
                 Image(systemName: "xmark.circle.fill")
@@ -74,7 +73,6 @@ struct ContentView: View {
       }
       .onAppear {
         print("Water...")
-        // Reset state when view appears
         pendingDeletion = (offsets: .init(), timer: nil)
         deleteCountdown = 0
       }
@@ -82,20 +80,17 @@ struct ContentView: View {
   }
 
   private func requestDeleteItems(offsets: IndexSet) {
-    // Only start timer if no deletion is pending
     guard pendingDeletion.timer == nil else { return }
 
     pendingDeletion.offsets = offsets
     deleteCountdown = Int(DELETION_TIMEOUT)
 
-    // Start countdown timer
     pendingDeletion.timer = Timer.publish(every: 1, on: .main, in: .common)
       .autoconnect()
       .sink { _ in
         deleteCountdown -= 1
 
         if deleteCountdown <= 0 {
-          // Execute deletion
           executeDeletion()
           pendingDeletion = (offsets: .init(), timer: nil)
         }
@@ -117,7 +112,6 @@ struct ContentView: View {
   }
 
   private func cancelPendingDeletion() {
-    // Cancel the timer
     pendingDeletion.timer?.cancel()
     pendingDeletion = (offsets: .init(), timer: nil)
     deleteCountdown = 0
@@ -136,7 +130,6 @@ struct ContentView: View {
   }
 
   private func deleteItems(offsets: IndexSet) {
-    // This function is now called by executeDeletion instead
     withAnimation {
       for index in offsets {
         modelContext.delete(items[index])
