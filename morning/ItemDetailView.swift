@@ -5,6 +5,7 @@ struct ItemDetailView: View {
   @Bindable var item: Item
   @Environment(\.modelContext) private var modelContext
   @State private var tapped = false
+  @State private var hasUserInteracted = false
 
   func setEmpty() {
     item.details = String(localized: "New item...")
@@ -52,16 +53,26 @@ struct ItemDetailView: View {
     .toolbar {
       ToolbarItem(placement: .navigationBarTrailing) {
         Button(action: clearDetails) {
-          Label(String(localized: "Clear"), systemImage: "xmark.circle.fill")
+          HStack(spacing: 4) {
+            Text(String(localized: "Clear"))
+              .foregroundColor(.black)
+
+            Image(systemName: "xmark.circle.fill")
+              .foregroundColor((item.isNew && !hasUserInteracted) ? .blue : .black)
+          }
         }
       }
     }
-    .onAppear {
-      if item.isNew {
-        item.isNew = false
+    .onChange(of: item.details) { _, newValue in
+      if item.isNew && !hasUserInteracted {
+        hasUserInteracted = true
       }
-    }.onDisappear {
-      if item.details.isEmpty {
+    }
+    .onDisappear {
+      if item.details.isEmpty && item.isNew {
+        modelContext.delete(item)
+        try? modelContext.save()
+      } else if item.details.isEmpty {
         item.isNew = true
         setEmpty()
       }
