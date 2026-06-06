@@ -78,6 +78,9 @@ struct ContentView: View {
         pendingDeletion = (offsets: .init(), timer: nil)
         deleteCountdown = 0
       }
+      .onDisappear() {
+        cancelPendingDeletion()
+      }
     }
   }
 
