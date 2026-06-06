@@ -78,9 +78,6 @@ struct ContentView: View {
         pendingDeletion = (offsets: .init(), timer: nil)
         deleteCountdown = 0
       }
-      .onDisappear() {
-        cancelPendingDeletion()
-      }
     }
   }
 
@@ -107,8 +104,9 @@ struct ContentView: View {
 
   private func executeDeletion() {
     withAnimation {
-      for index in pendingDeletion.offsets {
-        modelContext.delete(items[index])
+      for offset in pendingDeletion.offsets {
+        let itemToDelete = items[offset]
+        modelContext.delete(itemToDelete)
       }
       do {
         try modelContext.save()
