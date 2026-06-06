@@ -3,9 +3,15 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
+  private let DELETION_TIMEOUT: Double = 5.0
+
   @Environment(\.modelContext) private var modelContext
   @Query private var items: [Item]
   @State private var sortingOldestTop = true
+  @State private var pendingDeletion: (offsets: IndexSet, timer: AnyCancellable?) = (
+    offsets: .init(), timer: nil
+  )
+  @State private var deleteCountdown = 0
 
   var body: some View {
     NavigationView {
@@ -35,7 +41,7 @@ struct ContentView: View {
               ItemRowView(item: item)
             }
           }
-          .onDelete(perform: deleteItems)
+          .onDelete(perform: requestDeleteItems)
         }
       }
       .toolbar {
@@ -50,18 +56,77 @@ struct ContentView: View {
           }
         }
         ToolbarItem(placement: .primaryAction) {
-          Button(action: addItem) {
-            Label(String(localized: "Add Item"), systemImage: "plus")
+          if pendingDeletion.timer != nil {
+            // Fixed: Removed the String argument before 'action'
+            Button(action: cancelPendingDeletion) {
+              HStack {
+                Image(systemName: "xmark.circle.fill")
+                  .foregroundStyle(.red)
+                Text("\(Int(DELETION_TIMEOUT - Double(deleteCountdown)))")
+                  .monospacedDigit()
+                  .foregroundStyle(.red)
+              }
+            }
+          } else {
+            Button(action: addItem) {
+              Label(String(localized: "Add Item"), systemImage: "plus")
+            }
           }
         }
       }
-    }.onReceive(
-      NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-    ) { _ in
-      print("Fire...")
-    }.onAppear {
-      print("Water...")
+      .onReceive(
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+      ) { _ in
+        print("Fire...")
+      }
+      .onAppear {
+        print("Water...")
+        // Reset state when view appears
+        pendingDeletion = (offsets: .init(), timer: nil)
+        deleteCountdown = 0
+      }
     }
+  }
+
+  private func requestDeleteItems(offsets: IndexSet) {
+    // Only start timer if no deletion is pending
+    guard pendingDeletion.timer == nil else { return }
+
+    pendingDeletion.offsets = offsets
+    deleteCountdown = Int(DELETION_TIMEOUT)
+
+    // Start countdown timer
+    pendingDeletion.timer = Timer.publish(every: 1, on: .main, in: .common)
+      .autoconnect()
+      .sink { _ in
+        deleteCountdown -= 1
+
+        if deleteCountdown <= 0 {
+          // Execute deletion
+          executeDeletion()
+          pendingDeletion = (offsets: .init(), timer: nil)
+        }
+      }
+  }
+
+  private func executeDeletion() {
+    withAnimation {
+      for index in pendingDeletion.offsets {
+        modelContext.delete(items[index])
+      }
+      do {
+        try modelContext.save()
+      } catch {
+        print("Failed to delete items: \(error.localizedDescription)")
+      }
+    }
+  }
+
+  private func cancelPendingDeletion() {
+    // Cancel the timer
+    pendingDeletion.timer?.cancel()
+    pendingDeletion = (offsets: .init(), timer: nil)
+    deleteCountdown = 0
   }
 
   private func addItem() {
@@ -77,6 +142,7 @@ struct ContentView: View {
   }
 
   private func deleteItems(offsets: IndexSet) {
+    // This function is now called by executeDeletion instead
     withAnimation {
       for index in offsets {
         modelContext.delete(items[index])
@@ -88,6 +154,7 @@ struct ContentView: View {
       }
     }
   }
+
   private func uncompleteItems() {
     withAnimation {
       for item in items {

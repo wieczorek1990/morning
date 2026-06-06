@@ -6,6 +6,14 @@ struct ItemDetailView: View {
   @Environment(\.modelContext) private var modelContext
   @State private var tapped = false
 
+  func setEmpty() {
+    item.details = String(localized: "New item...")
+  }
+
+  func clearDetails() {
+    self.item.details = ""
+  }
+
   var tap: some Gesture {
     TapGesture(count: 1)
       .onEnded { _ in self.tapped = !self.tapped }
@@ -41,15 +49,21 @@ struct ItemDetailView: View {
     }
     .padding()
     .navigationTitle(String(localized: "Edit"))
+    .toolbar {
+      ToolbarItem(placement: .navigationBarTrailing) {
+        Button(action: clearDetails) {
+          Label(String(localized: "Clear"), systemImage: "xmark.circle.fill")
+        }
+      }
+    }
     .onAppear {
       if item.isNew {
-        item.details = ""
         item.isNew = false
       }
     }.onDisappear {
       if item.details.isEmpty {
-        item.details = String(localized: "New item...")
         item.isNew = true
+        setEmpty()
       }
     }
     .gesture(tap)
