@@ -6,7 +6,8 @@ struct ContentView: View {
   private let DELETION_TIMEOUT: Double = 5.0
 
   @Environment(\.modelContext) private var modelContext
-  @Query private var items: [Item]
+  @Query(sort: \Item.timestampCreated, order: .forward)
+  private var items: [Item]
   @State private var sortingOldestTop = true
   @State private var pendingDeletion: (offsets: IndexSet, timer: AnyCancellable?) = (
     offsets: .init(), timer: nil
@@ -26,15 +27,7 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .padding(.vertical, 40)
         } else {
-          ForEach(
-            items.sorted { item1, item2 in
-              if sortingOldestTop {
-                return item1.timestampCreated < item2.timestampCreated
-              } else {
-                return item1.timestampCreated > item2.timestampCreated
-              }
-            }
-          ) { item in
+          ForEach(items) { item in
             NavigationLink {
               ItemDetailView(item: item)
             } label: {
