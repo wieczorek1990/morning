@@ -104,12 +104,14 @@ struct ContentView: View {
 
   private func executeDeletion(offsets: IndexSet) {
     withAnimation {
-      // Pobieramy elementy bezpośrednio z posortowanej listy, która była wyświetlana
-      for offset in offsets {
-        if offset < sortedItems.count {
-          modelContext.delete(sortedItems[offset])
+      let sortedOffsets = offsets.sorted().reversed()
+
+      for index in sortedOffsets {
+        if index < sortedItems.count {
+          modelContext.delete(sortedItems[index])
         }
       }
+
       do {
         try modelContext.save()
       } catch {
