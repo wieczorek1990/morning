@@ -12,11 +12,21 @@ struct ItemDetailView: View {
         .font(.body)
         .padding()
         .focused($editionFocused)
+        .onChange(of: item.details) {
+          item.timestampModified = Date()
+        }
 
-      let formattedDate = item.timestamp.formatted(
+      let createdFormattedDate = item.timestampCreated.formatted(
         date: .abbreviated, time: .shortened
       )
-      Text(String(format: String(localized: "Created at: %@"), formattedDate))
+      Text(String(format: String(localized: "Created at: %@"), createdFormattedDate))
+        .foregroundColor(.secondary)
+        .font(.caption)
+
+      let modifiedFormattedDate = item.timestampModified.formatted(
+        date: .abbreviated, time: .standard
+      )
+      Text(String(format: String(localized: "Modified at: %@"), modifiedFormattedDate))
         .foregroundColor(.secondary)
         .font(.caption)
     }

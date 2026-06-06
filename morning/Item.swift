@@ -4,18 +4,20 @@ import SwiftData
 @Model
 final class Item {
   var id: UUID
-  var timestamp: Date
+  var timestampCreated: Date
+  var timestampModified: Date
   var details: String
   var isCompleted: Bool
   var isNew: Bool
 
   init(
     details: String, isCompleted: Bool = false, isNew: Bool = true, id: UUID = UUID(),
-    timestamp: Date = Date()
+    timestampCreated: Date = Date(), timestampModified: Date = Date()
   ) {
     self.details = details
     self.isCompleted = isCompleted
-    self.timestamp = timestamp
+    self.timestampCreated = timestampCreated
+    self.timestampModified = timestampModified
     self.id = id
     self.isNew = isNew
   }

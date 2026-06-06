@@ -23,9 +23,9 @@ struct ContentView: View {
           ForEach(
             items.sorted { item1, item2 in
               if sortingOldestTop {
-                return item1.timestamp < item2.timestamp
+                return item1.timestampCreated < item2.timestampCreated
               } else {
-                return item1.timestamp > item2.timestamp
+                return item1.timestampCreated > item2.timestampCreated
               }
             }
           ) { item in
